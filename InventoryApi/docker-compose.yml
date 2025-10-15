@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: inventory-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: heslo123
+      POSTGRES_DB: inventorydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      ConnectionStrings__DbConnection: "Host=postgres;Database=inventorydb;Username=postgres;Password=heslo123"
+    ports:
+      - "5000:80"
+
+volumes:
+  pgdata:

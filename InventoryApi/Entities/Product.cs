@@ -7,4 +7,5 @@ public class Product
     public decimal Price { get; set; }
     public required string Currency { get; set; }
     public required string Sku { get; set; }
+    public required bool IsDeleted { get; set; } = false;
 }

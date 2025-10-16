@@ -3,8 +3,8 @@
 public class Product
 {
     public int Id { get; set; }
-    public string Name { get; set; } = null!;
+    public required string Name { get; set; }
     public decimal Price { get; set; }
-    public string Currency { get; set; } = null!;
-    public string SKU { get; set; } = null!;
+    public required string Currency { get; set; }
+    public required string Sku { get; set; }
 }

@@ -1,16 +1,15 @@
 ﻿using InventoryApi.Enums;
 
-namespace InventoryApi.Entities
+namespace InventoryApi.Entities;
+
+public class Stock
 {
-    public class Stock
-    {
-        public int Id { get; set; }
-        public int Quantity { get; set; }
-        public Unit Unit { get; set; }
+    public int Id { get; set; }
+    public int Quantity { get; set; }
+    public Unit Unit { get; set; }
 
-        public int ProductId { get; set; }
-        public Product Product { get; set; } = null!;
+    public int ProductId { get; set; }
+    public required Product Product { get; set; }
 
-        public List<StockMovement> StockMovements { get; set; } = new List<StockMovement>();
-    }
+    public List<StockMovement> StockMovements { get; set; } = [];
 }

@@ -1,5 +1,6 @@
 ﻿using InventoryApi.Data;
 using InventoryApi.DTOs;
+using InventoryApi.Entities;
 using InventoryApi.Mappers;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,9 +17,7 @@ public class ProductService : IProductService
 
     public async Task<ProductDto> GetByIdAsync(int id)
     {
-        var product = await _context.Products
-            .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)
-            ?? throw new KeyNotFoundException($"Product with id {id} not found");
+        var product = await GetProductByIdOrThrowAsync(id);
 
         return ProductMapper.ToDto(product);
     }
@@ -40,25 +39,23 @@ public class ProductService : IProductService
 
     public async Task<ProductDto> UpdateAsync(int id, UpdateProductDto updateProductDto)
     {
-        var entity = await _context.Products.FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)
-            ?? throw new KeyNotFoundException($"Product with id {id} not found");
+        var product = await GetProductByIdOrThrowAsync(id);
 
-        entity.Name = updateProductDto.Name;
-        entity.Price = updateProductDto.Price;
-        entity.Currency = updateProductDto.Currency;
-        entity.Sku = updateProductDto.Sku;
+        product.Name = updateProductDto.Name;
+        product.Price = updateProductDto.Price;
+        product.Currency = updateProductDto.Currency;
+        product.Sku = updateProductDto.Sku;
 
         await _context.SaveChangesAsync();
 
-        return ProductMapper.ToDto(entity);
+        return ProductMapper.ToDto(product);
     }
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await _context.Products.FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)
-            ?? throw new KeyNotFoundException($"Product with id {id} not found");
+        var product = await GetProductByIdOrThrowAsync(id);
 
-        entity.IsDeleted = true;
+        product.IsDeleted = true;
         await _context.SaveChangesAsync();
     }
 
@@ -69,5 +66,12 @@ public class ProductService : IProductService
             .ToListAsync();
 
         return products.Select(ProductMapper.ToDto);
+    }
+
+    private async Task<Product> GetProductByIdOrThrowAsync(int id)
+    {
+        return await _context.Products
+            .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)
+            ?? throw new KeyNotFoundException($"Product with id {id} not found");
     }
 }

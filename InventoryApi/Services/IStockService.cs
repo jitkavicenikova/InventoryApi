@@ -4,9 +4,9 @@ namespace InventoryApi.Services;
 
 public interface IStockService
 {
-    Task<StockDetailDto> GetDetailByIdAsync(string id);
+    Task<StockDetailDto> GetDetailByIdAsync(int id);
     Task<StockDto> CreateAsync(CreateStockDto product);
-    Task<bool> UpdateQuantityAsync(int stockId, UpdateStockDto update);
-    Task<bool> DeleteAsync(int id);
+    Task UpdateQuantityAsync(int stockId, UpdateStockDto update);
+    Task DeleteAsync(int id);
     Task<IEnumerable<StockDto>> GetAllAsync();
 }

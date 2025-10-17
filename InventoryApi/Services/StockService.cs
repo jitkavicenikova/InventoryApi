@@ -46,7 +46,7 @@ public class StockService : IStockService
         _context.Stocks.Add(stock);
         await _context.SaveChangesAsync();
 
-        await _movementService.CreateAsync(stock.Id, createStockDto.Quantity, MovementType.Initial);
+        await _movementService.CreateAsync(stock, createStockDto.Quantity, MovementType.Initial);
 
         return StockMapper.ToDto(stock);
     }
@@ -57,11 +57,9 @@ public class StockService : IStockService
             .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted)
             ?? throw new KeyNotFoundException($"Stock with id {id} not found");
 
-        await _movementService.CreateAsync(id, update.QuantityChange, update.MovementType);
+        await _movementService.CreateAsync(stock, update.QuantityChange, update.MovementType);
 
-        stock.Quantity += update.MovementType == MovementType.Incoming
-            ? update.QuantityChange
-            : -update.QuantityChange;
+        UpdateStockQuantity(stock, update.QuantityChange, update.MovementType);
         await _context.SaveChangesAsync();
 
         return StockMapper.ToDto(stock);
@@ -84,5 +82,25 @@ public class StockService : IStockService
             .ToListAsync();
 
         return stocks.Select(StockMapper.ToDto);
+    }
+
+    private static void UpdateStockQuantity(Stock stock, int quantityChange, MovementType type)
+    {
+        switch (type)
+        {
+            case MovementType.Initial:
+            case MovementType.Incoming:
+                stock.Quantity += quantityChange;
+                break;
+            case MovementType.Outgoing:
+                if (stock.Quantity < quantityChange)
+                {
+                    throw new InvalidOperationException("Not enough items in stock for outgoing movement.");
+                }
+                stock.Quantity -= quantityChange;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException($"Unsupported movement type: {type}");
+        }
     }
 }

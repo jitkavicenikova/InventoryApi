@@ -1,9 +1,9 @@
-﻿using InventoryApi.DTOs;
+﻿using InventoryApi.Entities;
 using InventoryApi.Enums;
 
 namespace InventoryApi.Services;
 
 public interface IStockMovementService
 {
-    Task CreateAsync(int stockId, int quantityChange, MovementType type);
+    Task CreateAsync(Stock stock, int quantityChange, MovementType type);
 }

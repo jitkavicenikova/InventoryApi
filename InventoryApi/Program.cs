@@ -1,4 +1,5 @@
 using InventoryApi.Data;
+using InventoryApi.Extensions;
 using InventoryApi.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,9 +21,7 @@ builder.Services.AddDbContext<InventoryDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection")));
 
 // DI
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IStockService, StockService>();
-builder.Services.AddScoped<IStockMovementService, StockMovementService>();
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 

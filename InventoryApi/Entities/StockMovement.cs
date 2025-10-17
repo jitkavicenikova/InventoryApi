@@ -10,5 +10,5 @@ public class StockMovement
     public DateTime Timestamp { get; set; }
 
     public int StockId { get; set; }
-    public required Stock Stock { get; set; };
+    public required Stock Stock { get; set; }
 }

@@ -38,16 +38,21 @@ public class StockMovementService : IStockMovementService
 
     private static void UpdateStockQuantity(Stock stock, int quantityChange, MovementType type)
     {
-        if (type == MovementType.Incoming)
+        switch (type)
         {
-            stock.Quantity += quantityChange;
-        }
-        else if (type == MovementType.Outgoing)
-        {
-            if (stock.Quantity < quantityChange)
-                throw new InvalidOperationException("Not enough items in stock for outgoing movement.");
-
-            stock.Quantity -= quantityChange;
+            case MovementType.Initial:
+            case MovementType.Incoming:
+                stock.Quantity += quantityChange;
+                break;
+            case MovementType.Outgoing:
+                if (stock.Quantity < quantityChange)
+                {
+                    throw new InvalidOperationException("Not enough items in stock for outgoing movement.");
+                }
+                stock.Quantity -= quantityChange;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException($"Unsupported movement type: {type}");
         }
     }
 }

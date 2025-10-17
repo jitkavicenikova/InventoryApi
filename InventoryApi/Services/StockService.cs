@@ -46,6 +46,8 @@ public class StockService : IStockService
         _context.Stocks.Add(stock);
         await _context.SaveChangesAsync();
 
+        await _movementService.CreateAsync(stock.Id, createStockDto.Quantity, MovementType.Initial);
+
         return StockMapper.ToDto(stock);
     }
 

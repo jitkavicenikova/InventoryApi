@@ -14,12 +14,13 @@ public class ProductService : IProductService
         _context = context;
     }
 
-    public async Task<ProductDto?> GetByIdAsync(int id)
+    public async Task<ProductDto> GetByIdAsync(int id)
     {
         var product = await _context.Products
-            .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
+            .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)
+            ?? throw new KeyNotFoundException($"Product with id {id} not found");
 
-        return product == null ? null : ProductMapper.ToDto(product);
+        return ProductMapper.ToDto(product);
     }
 
     public async Task<ProductDto> CreateAsync(CreateProductDto createProductDto)
@@ -37,13 +38,10 @@ public class ProductService : IProductService
         return ProductMapper.ToDto(entity);
     }
 
-    public async Task<ProductDto?> UpdateAsync(int id, UpdateProductDto updateProductDto)
+    public async Task<ProductDto> UpdateAsync(int id, UpdateProductDto updateProductDto)
     {
-        var entity = await _context.Products.FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
-        if (entity == null)
-        {
-            return null;
-        }
+        var entity = await _context.Products.FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)
+            ?? throw new KeyNotFoundException($"Product with id {id} not found");
 
         entity.Name = updateProductDto.Name;
         entity.Price = updateProductDto.Price;
@@ -55,17 +53,13 @@ public class ProductService : IProductService
         return ProductMapper.ToDto(entity);
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task DeleteAsync(int id)
     {
-        var entity = await _context.Products.FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
-        if (entity == null)
-        {
-            return false;
-        }
+        var entity = await _context.Products.FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)
+            ?? throw new KeyNotFoundException($"Product with id {id} not found");
 
         entity.IsDeleted = true;
         await _context.SaveChangesAsync();
-        return true;
     }
 
     public async Task<IEnumerable<ProductDto>> GetAllAsync()

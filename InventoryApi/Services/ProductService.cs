@@ -17,7 +17,7 @@ public class ProductService : IProductService
 
     public async Task<ProductDto> GetByIdAsync(int id)
     {
-        var product = await GetProductByIdOrThrowAsync(id);
+        var product = await GetEntityByIdOrThrow(id);
 
         return ProductMapper.ToDto(product);
     }
@@ -39,7 +39,7 @@ public class ProductService : IProductService
 
     public async Task<ProductDto> UpdateAsync(int id, UpdateProductDto updateProductDto)
     {
-        var product = await GetProductByIdOrThrowAsync(id);
+        var product = await GetEntityByIdOrThrow(id);
 
         product.Name = updateProductDto.Name;
         product.Price = updateProductDto.Price;
@@ -53,8 +53,8 @@ public class ProductService : IProductService
 
     public async Task DeleteAsync(int id)
     {
-        var product = await GetProductByIdOrThrowAsync(id);
-
+        var product = await GetEntityByIdOrThrow(id);
+        // TODO - delete stock
         product.IsDeleted = true;
         await _context.SaveChangesAsync();
     }
@@ -68,7 +68,7 @@ public class ProductService : IProductService
         return products.Select(ProductMapper.ToDto);
     }
 
-    private async Task<Product> GetProductByIdOrThrowAsync(int id)
+    public async Task<Product> GetEntityByIdOrThrow(int id)
     {
         return await _context.Products
             .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)

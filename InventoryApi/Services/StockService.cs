@@ -51,7 +51,7 @@ public class StockService : IStockService
         return StockMapper.ToDto(stock);
     }
 
-    public async Task UpdateQuantityAsync(int id, UpdateStockDto update)
+    public async Task<StockDto> UpdateQuantityAsync(int id, UpdateStockDto update)
     {
         var stock = await _context.Stocks
             .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted)
@@ -63,6 +63,8 @@ public class StockService : IStockService
             ? update.QuantityChange
             : -update.QuantityChange;
         await _context.SaveChangesAsync();
+
+        return StockMapper.ToDto(stock);
     }
 
     public async Task DeleteAsync(int id)

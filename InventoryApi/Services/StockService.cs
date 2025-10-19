@@ -17,7 +17,7 @@ public class StockService(InventoryDbContext context, IMapper mapper, IStockMove
         var stock = await context.Stocks
             .Include(s => s.StockMovements)
             .Include(s => s.Product)
-            .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted)
+            .FirstOrDefaultAsync(s => s.Id == id)
             ?? throw new KeyNotFoundException($"Stock with ID {id} not found.");
 
         return mapper.Map<StockDetailDto>(stock);
@@ -26,7 +26,7 @@ public class StockService(InventoryDbContext context, IMapper mapper, IStockMove
     public async Task<StockDto> CreateAsync(CreateStockDto createStockDto)
     {
         var product = await context.Products
-            .FirstOrDefaultAsync(p => p.Id == createStockDto.ProductId && !p.IsDeleted)
+            .FirstOrDefaultAsync(p => p.Id == createStockDto.ProductId)
             ?? throw new KeyNotFoundException($"Product with id {createStockDto.ProductId} not found");
         var stock = new Stock
         {
@@ -48,7 +48,7 @@ public class StockService(InventoryDbContext context, IMapper mapper, IStockMove
     public async Task<StockDto> UpdateQuantityAsync(int id, UpdateStockQuantityDto update)
     {
         var stock = await context.Stocks
-            .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted)
+            .FirstOrDefaultAsync(s => s.Id == id)
             ?? throw new KeyNotFoundException($"Stock with id {id} not found");
 
         UpdateStockQuantity(stock, update.QuantityChange, update.MovementType);

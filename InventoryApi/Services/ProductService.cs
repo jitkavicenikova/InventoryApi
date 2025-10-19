@@ -60,9 +60,7 @@ public class ProductService(InventoryDbContext context, IMapper mapper, IStockSe
 
     public async Task<IEnumerable<ProductDto>> GetAllAsync()
     {
-        var products = await context.Products
-            .Where(p => !p.IsDeleted)
-            .ToListAsync();
+        var products = await context.Products.ToListAsync();
 
         return products.Select(mapper.Map<ProductDto>);
     }
@@ -70,13 +68,13 @@ public class ProductService(InventoryDbContext context, IMapper mapper, IStockSe
     private async Task<Product> GetEntityByIdOrThrow(int id)
     {
         return await context.Products
-            .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)
+            .FirstOrDefaultAsync(p => p.Id == id)
             ?? throw new KeyNotFoundException($"Product with id {id} not found");
     }
 
     private void CheckSkuUniqueness(string sku, int? excludeId = null)
     {
-        if (context.Products.Any(p => p.Sku == sku && !p.IsDeleted
+        if (context.Products.Any(p => p.Sku == sku
             && (!excludeId.HasValue || p.Id != excludeId.Value)))
         {
             throw new InvalidOperationException("SKU must be unique");

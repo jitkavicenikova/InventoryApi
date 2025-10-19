@@ -6,20 +6,14 @@ namespace InventoryApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class StockController : ControllerBase
+public class StockController(IStockService service) : ControllerBase
 {
-    private readonly IStockService _service;
-    public StockController(IStockService service)
-    {
-        _service = service;
-    }
-
     [HttpGet("{id:int}")]
     public async Task<ActionResult<StockDetailDto>> GetDetailById(int id)
     {
         try
         {
-            var stock = await _service.GetDetailByIdAsync(id);
+            var stock = await service.GetDetailByIdAsync(id);
             return Ok(stock);
         }
         catch (KeyNotFoundException e)
@@ -33,7 +27,7 @@ public class StockController : ControllerBase
     {
         try
         {
-            var stock = await _service.CreateAsync(createStockDto);
+            var stock = await service.CreateAsync(createStockDto);
             return CreatedAtAction(nameof(GetDetailById), new { id = stock.Id }, stock);
         }
         catch (KeyNotFoundException e)
@@ -47,7 +41,7 @@ public class StockController : ControllerBase
     {
         try
         {
-            var stock = await _service.UpdateQuantityAsync(id, updateStockDto);
+            var stock = await service.UpdateQuantityAsync(id, updateStockDto);
             return Ok(stock);
         }
         catch (KeyNotFoundException e)
@@ -67,7 +61,7 @@ public class StockController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<StockDto>>> GetAll()
     {
-        var stocks = await _service.GetAllAsync();
+        var stocks = await service.GetAllAsync();
         return Ok(stocks);
     }
 }

@@ -6,21 +6,14 @@ namespace InventoryApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductController : ControllerBase
+public class ProductController(IProductService service) : ControllerBase
 {
-    private readonly IProductService _service;
-
-    public ProductController(IProductService service)
-    {
-        _service = service;
-    }
-
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductDto>> GetById(int id)
     {
         try
         {
-            var product = await _service.GetByIdAsync(id);
+            var product = await service.GetByIdAsync(id);
             return Ok(product);
         }
         catch (KeyNotFoundException e)
@@ -34,7 +27,7 @@ public class ProductController : ControllerBase
     {
         try
         {
-            var product = await _service.CreateAsync(createProductDto);
+            var product = await service.CreateAsync(createProductDto);
             return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
         catch (InvalidOperationException e)
@@ -48,7 +41,7 @@ public class ProductController : ControllerBase
     {
         try
         {
-            var product = await _service.UpdateAsync(id, updateProductDto);
+            var product = await service.UpdateAsync(id, updateProductDto);
             return Ok(product);
         }
         catch (KeyNotFoundException e)
@@ -66,7 +59,7 @@ public class ProductController : ControllerBase
     {
         try
         {
-            await _service.DeleteAsync(id);
+            await service.DeleteAsync(id);
             return NoContent();
         }
         catch (KeyNotFoundException e)
@@ -78,7 +71,7 @@ public class ProductController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
     {
-        var products = await _service.GetAllAsync();
+        var products = await service.GetAllAsync();
         return Ok(products);
     }
 }

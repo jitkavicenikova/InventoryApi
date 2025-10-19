@@ -7,33 +7,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryApi.Services;
 
-public class StockService : IStockService
+public class StockService(InventoryDbContext context, IMapper mapper, IStockMovementService movementService) : IStockService
 {
-    private readonly InventoryDbContext _context;
-    private readonly IMapper _mapper;
-    private readonly IStockMovementService _movementService;
-
-    public StockService(InventoryDbContext context, IMapper mapper, IStockMovementService movementService)
-    {
-        _context = context;
-        _mapper = mapper;
-        _movementService = movementService;
-    }
-
     public async Task<StockDetailDto> GetDetailByIdAsync(int id)
     {
-        var stock = await _context.Stocks
+        var stock = await context.Stocks
             .Include(s => s.StockMovements)
             .Include(s => s.Product)
             .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted) 
             ?? throw new KeyNotFoundException($"Stock with ID {id} not found.");
         
-        return _mapper.Map<StockDetailDto>(stock);
+        return mapper.Map<StockDetailDto>(stock);
     }
 
     public async Task<StockDto> CreateAsync(CreateStockDto createStockDto)
     {
-        var product = await _context.Products
+        var product = await context.Products
             .FirstOrDefaultAsync(p => p.Id == createStockDto.ProductId && !p.IsDeleted)
             ?? throw new KeyNotFoundException($"Product with id {createStockDto.ProductId} not found");
         var stock = new Stock
@@ -45,40 +34,40 @@ public class StockService : IStockService
             IsDeleted = false
         };
 
-        _context.Stocks.Add(stock);
-        await _context.SaveChangesAsync();
+        context.Stocks.Add(stock);
+        await context.SaveChangesAsync();
 
-        await _movementService.CreateAsync(stock, createStockDto.Quantity, MovementType.Initial);
+        await movementService.CreateAsync(stock, createStockDto.Quantity, MovementType.Initial);
 
-        return _mapper.Map<StockDto>(stock);
+        return mapper.Map<StockDto>(stock);
     }
 
     public async Task<StockDto> UpdateQuantityAsync(int id, UpdateStockDto update)
     {
-        var stock = await _context.Stocks
+        var stock = await context.Stocks
             .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted)
             ?? throw new KeyNotFoundException($"Stock with id {id} not found");
 
-        await _movementService.CreateAsync(stock, update.QuantityChange, update.MovementType);
+        await movementService.CreateAsync(stock, update.QuantityChange, update.MovementType);
 
         UpdateStockQuantity(stock, update.QuantityChange, update.MovementType);
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
-        return _mapper.Map<StockDto>(stock);
+        return mapper.Map<StockDto>(stock);
     }
 
     public async Task<IEnumerable<StockDto>> GetAllAsync()
     {
-        var stocks = await _context.Stocks
+        var stocks = await context.Stocks
             .Where(s => !s.IsDeleted)
             .ToListAsync();
 
-        return stocks.Select(_mapper.Map<StockDto>);
+        return stocks.Select(mapper.Map<StockDto>);
     }
 
     public async Task DeleteByProductIdAsync(int productId)
     {
-        var stock = await _context.Stocks
+        var stock = await context.Stocks
             .FirstOrDefaultAsync(s => s.ProductId == productId);
 
         if (stock == null)
@@ -87,7 +76,7 @@ public class StockService : IStockService
         }
 
         stock.IsDeleted = true;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     private static void UpdateStockQuantity(Stock stock, int quantityChange, MovementType type)

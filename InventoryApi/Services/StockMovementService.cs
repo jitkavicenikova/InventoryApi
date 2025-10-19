@@ -4,15 +4,8 @@ using InventoryApi.Enums;
 
 namespace InventoryApi.Services;
 
-public class StockMovementService : IStockMovementService
+public class StockMovementService(InventoryDbContext context) : IStockMovementService
 {
-    private readonly InventoryDbContext _context;
-
-    public StockMovementService(InventoryDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task CreateAsync(Stock stock, int quantityChange, MovementType type)
     {
         var movement = new StockMovement
@@ -24,7 +17,7 @@ public class StockMovementService : IStockMovementService
             Timestamp = DateTime.UtcNow
         };
 
-        _context.StockMovements.Add(movement);
-        await _context.SaveChangesAsync();
+        context.StockMovements.Add(movement);
+        await context.SaveChangesAsync();
     }
 }

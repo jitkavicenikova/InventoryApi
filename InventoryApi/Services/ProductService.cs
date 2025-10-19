@@ -6,35 +6,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryApi.Services;
 
-public class ProductService : IProductService
+public class ProductService(InventoryDbContext context, IMapper mapper, IStockService stockService) : IProductService
 {
-    private readonly InventoryDbContext _context;
-    private readonly IMapper _mapper;
-    private readonly IStockService _stockService;
-
-    public ProductService(InventoryDbContext context, IMapper mapper, IStockService stockService)
-    {
-        _context = context;
-        _mapper = mapper;
-        _stockService = stockService;
-    }
-
     public async Task<ProductDto> GetByIdAsync(int id)
     {
         var product = await GetEntityByIdOrThrow(id);
 
-        return _mapper.Map<ProductDto>(product);
+        return mapper.Map<ProductDto>(product);
     }
 
     public async Task<ProductDto> CreateAsync(CreateProductDto createProductDto)
     {
         CheckSkuUniqueness(createProductDto.Sku);
 
-        var entity = _mapper.Map<Product>(createProductDto);
-        _context.Products.Add(entity);
-        await _context.SaveChangesAsync();
+        var entity = mapper.Map<Product>(createProductDto);
+        context.Products.Add(entity);
+        await context.SaveChangesAsync();
 
-        return _mapper.Map<ProductDto>(entity);
+        return mapper.Map<ProductDto>(entity);
     }
 
     public async Task<ProductDto> UpdateAsync(int id, UpdateProductDto updateProductDto)
@@ -51,40 +40,40 @@ public class ProductService : IProductService
         product.Currency = updateProductDto.Currency;
         product.Sku = updateProductDto.Sku;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
-        return _mapper.Map<ProductDto>(product);
+        return mapper.Map<ProductDto>(product);
     }
 
     public async Task DeleteAsync(int id)
     {
         var product = await GetEntityByIdOrThrow(id);
 
-        await _stockService.DeleteByProductIdAsync(id);
+        await stockService.DeleteByProductIdAsync(id);
 
         product.IsDeleted = true;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<ProductDto>> GetAllAsync()
     {
-        var products = await _context.Products
+        var products = await context.Products
             .Where(p => !p.IsDeleted)
             .ToListAsync();
 
-        return products.Select(_mapper.Map<ProductDto>);
+        return products.Select(mapper.Map<ProductDto>);
     }
 
     private async Task<Product> GetEntityByIdOrThrow(int id)
     {
-        return await _context.Products
+        return await context.Products
             .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)
             ?? throw new KeyNotFoundException($"Product with id {id} not found");
     }
 
     private void CheckSkuUniqueness(string sku, int? excludeId = null)
     {
-        if (_context.Products.Any(p => p.Sku == sku && !p.IsDeleted
+        if (context.Products.Any(p => p.Sku == sku && !p.IsDeleted
             && (!excludeId.HasValue || p.Id != excludeId.Value)))
         {
             throw new InvalidOperationException("SKU must be unique");

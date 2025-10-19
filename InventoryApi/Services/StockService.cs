@@ -51,10 +51,10 @@ public class StockService(InventoryDbContext context, IMapper mapper, IStockMove
             .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted)
             ?? throw new KeyNotFoundException($"Stock with id {id} not found");
 
-        await movementService.CreateAsync(stock, update.QuantityChange, update.MovementType);
-
         UpdateStockQuantity(stock, update.QuantityChange, update.MovementType);
         await context.SaveChangesAsync();
+
+        await movementService.CreateAsync(stock, update.QuantityChange, update.MovementType);
 
         return mapper.Map<StockDto>(stock);
     }

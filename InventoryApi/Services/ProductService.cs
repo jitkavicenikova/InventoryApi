@@ -9,10 +9,12 @@ namespace InventoryApi.Services;
 public class ProductService : IProductService
 {
     private readonly InventoryDbContext _context;
+    private readonly IStockService _stockService;
 
-    public ProductService(InventoryDbContext context)
+    public ProductService(InventoryDbContext context, IStockService stockService)
     {
         _context = context;
+        _stockService = stockService;
     }
 
     public async Task<ProductDto> GetByIdAsync(int id)
@@ -54,7 +56,9 @@ public class ProductService : IProductService
     public async Task DeleteAsync(int id)
     {
         var product = await GetEntityByIdOrThrow(id);
-        // TODO - delete stock
+
+        await _stockService.DeleteByProductIdAsync(id);
+
         product.IsDeleted = true;
         await _context.SaveChangesAsync();
     }

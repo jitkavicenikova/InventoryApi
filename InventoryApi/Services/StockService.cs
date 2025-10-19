@@ -65,16 +65,6 @@ public class StockService : IStockService
         return StockMapper.ToDto(stock);
     }
 
-    public async Task DeleteAsync(int id)
-    {
-        var stock = await _context.Stocks
-            .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted)
-            ?? throw new KeyNotFoundException($"Stock with id {id} not found");
-
-        stock.IsDeleted = true;
-        await _context.SaveChangesAsync();
-    }
-
     public async Task<IEnumerable<StockDto>> GetAllAsync()
     {
         var stocks = await _context.Stocks
@@ -82,6 +72,20 @@ public class StockService : IStockService
             .ToListAsync();
 
         return stocks.Select(StockMapper.ToDto);
+    }
+
+    public async Task DeleteByProductIdAsync(int productId)
+    {
+        var stock = await _context.Stocks
+            .FirstOrDefaultAsync(s => s.ProductId == productId);
+
+        if (stock == null)
+        {
+            return;
+        }
+
+        stock.IsDeleted = true;
+        await _context.SaveChangesAsync();
     }
 
     private static void UpdateStockQuantity(Stock stock, int quantityChange, MovementType type)

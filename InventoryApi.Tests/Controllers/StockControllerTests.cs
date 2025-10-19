@@ -75,7 +75,7 @@ public class StockControllerTests
     [Fact]
     public async Task UpdateQuantity_ShouldReturnOk_WhenStockUpdated()
     {
-        var updateDto = new UpdateStockDto { QuantityChange = 15, MovementType = Enums.MovementType.Incoming };
+        var updateDto = new UpdateStockQuantityDto { QuantityChange = 15, MovementType = Enums.MovementType.Incoming };
         var stock = new StockDto { Id = 1, ProductId = 1, Quantity = 15 };
 
         _mockService.Setup(s => s.UpdateQuantityAsync(1, updateDto)).ReturnsAsync(stock);

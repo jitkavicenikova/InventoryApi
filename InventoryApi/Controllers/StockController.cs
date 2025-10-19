@@ -42,7 +42,7 @@ public class StockController(IStockService service) : ControllerBase
     /// <param name="updateStockDto">The updated stock data.</param>
     /// <returns>The updated <see cref="StockDto"/>.</returns>
     [HttpPatch]
-    public async Task<ActionResult<StockDto>> UpdateQuantity(int id, [FromBody] UpdateStockDto updateStockDto)
+    public async Task<ActionResult<StockDto>> UpdateQuantity(int id, [FromBody] UpdateStockQuantityDto updateStockDto)
     {
         var stock = await service.UpdateQuantityAsync(id, updateStockDto);
         return Ok(stock);

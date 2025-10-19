@@ -45,7 +45,7 @@ public class StockService(InventoryDbContext context, IMapper mapper, IStockMove
         return mapper.Map<StockDto>(stock);
     }
 
-    public async Task<StockDto> UpdateQuantityAsync(int id, UpdateStockDto update)
+    public async Task<StockDto> UpdateQuantityAsync(int id, UpdateStockQuantityDto update)
     {
         var stock = await context.Stocks
             .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted)

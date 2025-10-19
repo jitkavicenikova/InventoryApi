@@ -22,7 +22,7 @@ public class MappingProfile : Profile
         CreateMap<Stock, StockDto>().ReverseMap();
         CreateMap<Stock, StockDetailDto>().ReverseMap();
         CreateMap<CreateStockDto, Stock>();
-        CreateMap<UpdateStockDto, Stock>();
+        CreateMap<UpdateStockQuantityDto, Stock>();
 
         CreateMap<StockMovement, StockMovementDto>().ReverseMap();
     }

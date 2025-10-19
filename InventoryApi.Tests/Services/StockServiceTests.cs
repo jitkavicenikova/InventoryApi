@@ -95,7 +95,7 @@ public class StockServiceTests
         _context.Stocks.Add(stock);
         await _context.SaveChangesAsync();
 
-        var dto = new UpdateStockDto { QuantityChange = 3, MovementType = MovementType.Incoming };
+        var dto = new UpdateStockQuantityDto { QuantityChange = 3, MovementType = MovementType.Incoming };
         var result = await _service.UpdateQuantityAsync(1, dto);
 
         Assert.Equal(8, result.Quantity);
@@ -109,7 +109,7 @@ public class StockServiceTests
         _context.Stocks.Add(stock);
         await _context.SaveChangesAsync();
 
-        var dto = new UpdateStockDto { QuantityChange = 4, MovementType = MovementType.Outgoing };
+        var dto = new UpdateStockQuantityDto { QuantityChange = 4, MovementType = MovementType.Outgoing };
         var result = await _service.UpdateQuantityAsync(1, dto);
 
         Assert.Equal(6, result.Quantity);
@@ -123,7 +123,7 @@ public class StockServiceTests
         _context.Stocks.Add(stock);
         await _context.SaveChangesAsync();
 
-        var dto = new UpdateStockDto { QuantityChange = 5, MovementType = MovementType.Outgoing };
+        var dto = new UpdateStockQuantityDto { QuantityChange = 5, MovementType = MovementType.Outgoing };
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => _service.UpdateQuantityAsync(1, dto));
     }

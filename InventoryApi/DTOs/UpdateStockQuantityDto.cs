@@ -7,7 +7,7 @@ namespace InventoryApi.DTOs;
 /// Data transfer object used to update the quantity of a stock item.
 /// Contains the quantity change and the type of movement.
 /// </summary>
-public class UpdateStockDto
+public class UpdateStockQuantityDto
 {
     [Required]
     [Range(0, double.MaxValue, ErrorMessage = "QuantityChange must be 0 or greater.")]

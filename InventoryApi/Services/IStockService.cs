@@ -25,9 +25,9 @@ public interface IStockService
     /// Updates the quantity of an existing stock record.
     /// </summary>
     /// <param name="id">The identifier of the stock to update.</param>
-    /// <param name="update">The <see cref="UpdateStockDto"/> containing the quantity change information.</param>
+    /// <param name="update">The <see cref="UpdateStockQuantityDto"/> containing the quantity change information.</param>
     /// <returns>The updated <see cref="StockDto"/>.</returns>
-    Task<StockDto> UpdateQuantityAsync(int id, UpdateStockDto update);
+    Task<StockDto> UpdateQuantityAsync(int id, UpdateStockQuantityDto update);
 
     /// <summary>
     /// Retrieves all stock records that are not deleted.

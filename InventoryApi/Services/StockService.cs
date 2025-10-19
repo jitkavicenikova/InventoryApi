@@ -10,13 +10,11 @@ namespace InventoryApi.Services;
 public class StockService : IStockService
 {
     private readonly InventoryDbContext _context;
-    private readonly IProductService _productService;
     private readonly IStockMovementService _movementService;
 
-    public StockService(InventoryDbContext context, IProductService productService, IStockMovementService movementService)
+    public StockService(InventoryDbContext context, IStockMovementService movementService)
     {
         _context = context;
-        _productService = productService;
         _movementService = movementService;
     }
 
@@ -33,7 +31,9 @@ public class StockService : IStockService
 
     public async Task<StockDto> CreateAsync(CreateStockDto createStockDto)
     {
-        var product = await _productService.GetEntityByIdOrThrow(createStockDto.ProductId);
+        var product = await _context.Products
+            .FirstOrDefaultAsync(p => p.Id == createStockDto.ProductId && !p.IsDeleted)
+            ?? throw new KeyNotFoundException($"Product with id {createStockDto.ProductId} not found");
         var stock = new Stock
         {
             Quantity = createStockDto.Quantity,

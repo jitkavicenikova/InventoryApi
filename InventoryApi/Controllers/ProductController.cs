@@ -18,6 +18,8 @@ public class ProductController(IProductService service, ILogger<ProductControlle
     /// <param name="id">The ID of the product to retrieve.</param>
     /// <returns>The <see cref="ProductDto"/> with the specified ID.</returns>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDto>> GetById(int id)
     {
         logger.LogInformation("Retrieving product with ID {ProductId}", id);
@@ -31,6 +33,9 @@ public class ProductController(IProductService service, ILogger<ProductControlle
     /// <param name="createProductDto">The data for the product to create.</param>
     /// <returns>The created <see cref="ProductDto"/>.</returns>
     [HttpPost]
+    [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDto>> Create([FromBody] CreateProductDto createProductDto)
     {
         logger.LogInformation("Creating a new product with SKU {ProductSku}", createProductDto.Sku);
@@ -45,6 +50,9 @@ public class ProductController(IProductService service, ILogger<ProductControlle
     /// <param name="updateProductDto">The updated product data.</param>
     /// <returns>The updated <see cref="ProductDto"/>.</returns>
     [HttpPatch("{id:int}")]
+    [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDto>> Update(int id, [FromBody] UpdateProductDto updateProductDto)
     {
         logger.LogInformation("Updating product with ID {ProductId}", id);
@@ -58,6 +66,8 @@ public class ProductController(IProductService service, ILogger<ProductControlle
     /// <param name="id">The ID of the product to delete.</param>
     /// <returns>No content.</returns>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
         logger.LogInformation("Deleting product with ID {ProductId}", id);
@@ -70,6 +80,7 @@ public class ProductController(IProductService service, ILogger<ProductControlle
     /// </summary>
     /// <returns>A list of <see cref="ProductDto"/>.</returns>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
     {
         logger.LogInformation("Retrieving all products");

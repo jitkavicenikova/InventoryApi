@@ -17,6 +17,8 @@ public class StockController(IStockService service, ILogger<StockController> log
     /// <param name="id">The ID of the stock item to retrieve.</param>
     /// <returns>The <see cref="StockDetailDto"/> with the specified ID.</returns>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(StockDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StockDetailDto>> GetDetailById(int id)
     {
         logger.LogInformation("Retrieving stock detail with ID {StockId}", id);
@@ -30,6 +32,9 @@ public class StockController(IStockService service, ILogger<StockController> log
     /// <param name="createStockDto">The data for the stock item to create.</param>
     /// <returns>The created <see cref="StockDto"/>.</returns>
     [HttpPost]
+    [ProducesResponseType(typeof(StockDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StockDto>> Create([FromBody] CreateStockDto createStockDto)
     {
         logger.LogInformation("Creating a new stock item for Product ID {ProductId}", createStockDto.ProductId);
@@ -44,6 +49,9 @@ public class StockController(IStockService service, ILogger<StockController> log
     /// <param name="updateStockDto">The updated stock data.</param>
     /// <returns>The updated <see cref="StockDto"/>.</returns>
     [HttpPatch]
+    [ProducesResponseType(typeof(StockDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<StockDto>> UpdateQuantity(int id, [FromBody] UpdateStockQuantityDto updateStockDto)
     {
         logger.LogInformation("Updating stock quantity with ID {StockId}", id);
@@ -56,6 +64,7 @@ public class StockController(IStockService service, ILogger<StockController> log
     /// </summary>
     /// <returns>A list of <see cref="StockDto"/>.</returns>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<StockDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<StockDto>>> GetAll()
     {
         logger.LogInformation("Retrieving all stock items");

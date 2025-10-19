@@ -8,5 +8,5 @@ public class StockDetailDto
     public int ProductId { get; set; }
     public int Quantity { get; set; }
     public Unit Unit { get; set; }
-    public List<StockMovementDto> Movements { get; set; } = [];
+    public List<StockMovementDto> StockMovements { get; set; } = [];
 }

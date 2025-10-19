@@ -1,8 +1,8 @@
-﻿using InventoryApi.Data;
+﻿using AutoMapper;
+using InventoryApi.Data;
 using InventoryApi.DTOs;
 using InventoryApi.Entities;
 using InventoryApi.Enums;
-using InventoryApi.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventoryApi.Services;
@@ -10,11 +10,13 @@ namespace InventoryApi.Services;
 public class StockService : IStockService
 {
     private readonly InventoryDbContext _context;
+    private readonly IMapper _mapper;
     private readonly IStockMovementService _movementService;
 
-    public StockService(InventoryDbContext context, IStockMovementService movementService)
+    public StockService(InventoryDbContext context, IMapper mapper, IStockMovementService movementService)
     {
         _context = context;
+        _mapper = mapper;
         _movementService = movementService;
     }
 
@@ -26,7 +28,7 @@ public class StockService : IStockService
             .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted) 
             ?? throw new KeyNotFoundException($"Stock with ID {id} not found.");
         
-        return StockMapper.ToDetailDto(stock);
+        return _mapper.Map<StockDetailDto>(stock);
     }
 
     public async Task<StockDto> CreateAsync(CreateStockDto createStockDto)
@@ -48,7 +50,7 @@ public class StockService : IStockService
 
         await _movementService.CreateAsync(stock, createStockDto.Quantity, MovementType.Initial);
 
-        return StockMapper.ToDto(stock);
+        return _mapper.Map<StockDto>(stock);
     }
 
     public async Task<StockDto> UpdateQuantityAsync(int id, UpdateStockDto update)
@@ -62,7 +64,7 @@ public class StockService : IStockService
         UpdateStockQuantity(stock, update.QuantityChange, update.MovementType);
         await _context.SaveChangesAsync();
 
-        return StockMapper.ToDto(stock);
+        return _mapper.Map<StockDto>(stock);
     }
 
     public async Task<IEnumerable<StockDto>> GetAllAsync()
@@ -71,7 +73,7 @@ public class StockService : IStockService
             .Where(s => !s.IsDeleted)
             .ToListAsync();
 
-        return stocks.Select(StockMapper.ToDto);
+        return stocks.Select(_mapper.Map<StockDto>);
     }
 
     public async Task DeleteByProductIdAsync(int productId)

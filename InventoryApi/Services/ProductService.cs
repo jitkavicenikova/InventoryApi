@@ -1,7 +1,7 @@
-﻿using InventoryApi.Data;
+﻿using AutoMapper;
+using InventoryApi.Data;
 using InventoryApi.DTOs;
 using InventoryApi.Entities;
-using InventoryApi.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventoryApi.Services;
@@ -9,11 +9,13 @@ namespace InventoryApi.Services;
 public class ProductService : IProductService
 {
     private readonly InventoryDbContext _context;
+    private readonly IMapper _mapper;
     private readonly IStockService _stockService;
 
-    public ProductService(InventoryDbContext context, IStockService stockService)
+    public ProductService(InventoryDbContext context, IMapper mapper, IStockService stockService)
     {
         _context = context;
+        _mapper = mapper;
         _stockService = stockService;
     }
 
@@ -21,18 +23,18 @@ public class ProductService : IProductService
     {
         var product = await GetEntityByIdOrThrow(id);
 
-        return ProductMapper.ToDto(product);
+        return _mapper.Map<ProductDto>(product);
     }
 
     public async Task<ProductDto> CreateAsync(CreateProductDto createProductDto)
     {
         CheckSkuUniqueness(createProductDto.Sku);
 
-        var entity = ProductMapper.ToEntity(createProductDto);
+        var entity = _mapper.Map<Product>(createProductDto);
         _context.Products.Add(entity);
         await _context.SaveChangesAsync();
 
-        return ProductMapper.ToDto(entity);
+        return _mapper.Map<ProductDto>(entity);
     }
 
     public async Task<ProductDto> UpdateAsync(int id, UpdateProductDto updateProductDto)
@@ -51,7 +53,7 @@ public class ProductService : IProductService
 
         await _context.SaveChangesAsync();
 
-        return ProductMapper.ToDto(product);
+        return _mapper.Map<ProductDto>(product);
     }
 
     public async Task DeleteAsync(int id)
@@ -70,7 +72,7 @@ public class ProductService : IProductService
             .Where(p => !p.IsDeleted)
             .ToListAsync();
 
-        return products.Select(ProductMapper.ToDto);
+        return products.Select(_mapper.Map<ProductDto>);
     }
 
     private async Task<Product> GetEntityByIdOrThrow(int id)

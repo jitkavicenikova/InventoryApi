@@ -1,6 +1,7 @@
 using InventoryApi.Data;
 using InventoryApi.Extensions;
-using InventoryApi.Services;
+using InventoryApi.Mapping;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,12 @@ builder.Services.AddDbContext<InventoryDbContext>(options =>
 
 // DI
 builder.Services.AddApplicationServices();
+
+// Mapping
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile(new MappingProfile());
+});
 
 var app = builder.Build();
 

@@ -17,9 +17,9 @@ public class StockService(InventoryDbContext context, IMapper mapper, IStockMove
         var stock = await context.Stocks
             .Include(s => s.StockMovements)
             .Include(s => s.Product)
-            .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted) 
+            .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted)
             ?? throw new KeyNotFoundException($"Stock with ID {id} not found.");
-        
+
         return mapper.Map<StockDetailDto>(stock);
     }
 

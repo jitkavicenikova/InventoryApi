@@ -35,7 +35,7 @@ public class StockServiceTests
         expression.AddProfile<MappingProfile>();
         var config = new MapperConfiguration(expression, loggerFactory);
         var mapper = new Mapper(config);
-        _service = new StockService(_context,mapper, _stockMovementService.Object);
+        _service = new StockService(_context, mapper, _stockMovementService.Object);
         product = new Product
         {
             Id = 1,

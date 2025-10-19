@@ -2,6 +2,9 @@
 
 namespace InventoryApi.Entities;
 
+/// <summary>
+/// Entity representing a single movement or change in stock quantity for a specific stock entry.
+/// </summary>
 public class StockMovement
 {
     public int Id { get; set; }

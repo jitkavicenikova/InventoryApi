@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryApi.Tests.Services;
 
+/// <summary>
+/// Unit tests for <see cref="StockMovementService"/>.
+/// </summary>
 public class StockMovementServiceTests
 {
     private readonly InventoryDbContext _context;

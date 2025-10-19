@@ -3,6 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InventoryApi.DTOs;
 
+/// <summary>
+/// Data transfer object used to create a new stock item.
+/// Contains all required fields for stock creation.
+/// </summary>
 public class CreateStockDto
 {
     [Required]

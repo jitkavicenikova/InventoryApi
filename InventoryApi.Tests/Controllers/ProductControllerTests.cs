@@ -6,6 +6,10 @@ using Moq;
 
 namespace InventoryApi.Tests.Controllers;
 
+/// <summary>
+/// Unit tests for <see cref="ProductController"/>.
+/// Tests cover typical controller actions and expected responses.
+/// </summary>
 public class ProductControllerTests
 {
     private readonly Mock<IProductService> _mockService;

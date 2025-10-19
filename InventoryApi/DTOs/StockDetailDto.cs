@@ -2,6 +2,9 @@
 
 namespace InventoryApi.DTOs;
 
+/// <summary>
+/// Data transfer object representing a stock item, including associated stock movements.
+/// </summary>
 public class StockDetailDto
 {
     public int Id { get; set; }

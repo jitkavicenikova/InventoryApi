@@ -11,6 +11,9 @@ using Moq;
 
 namespace InventoryApi.Tests.Services;
 
+/// <summary>
+/// Unit tests for <see cref="StockService"/>.
+/// </summary>
 public class StockServiceTests
 {
     private readonly InventoryDbContext _context;

@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryApi.Services;
 
+/// <summary>
+/// Service for managing stocks, implements <see cref="IStockService"/>.
+/// </summary>
 public class StockService(InventoryDbContext context, IMapper mapper, IStockMovementService movementService) : IStockService
 {
     public async Task<StockDetailDto> GetDetailByIdAsync(int id)

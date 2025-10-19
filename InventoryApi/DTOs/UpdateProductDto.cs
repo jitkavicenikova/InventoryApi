@@ -2,6 +2,10 @@
 
 namespace InventoryApi.DTOs;
 
+/// <summary>
+/// Data transfer object used to update an existing product.
+/// Contains all required fields for product update.
+/// </summary>
 public class UpdateProductDto
 {
     [Required]

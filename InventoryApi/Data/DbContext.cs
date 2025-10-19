@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryApi.Data;
 
+/// <summary>
+/// Application DbContext.
+/// </summary>
 public class InventoryDbContext(DbContextOptions<InventoryDbContext> options) : DbContext(options)
 {
     public DbSet<Product> Products { get; set; } = null!;

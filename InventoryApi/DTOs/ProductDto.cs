@@ -1,5 +1,8 @@
 ﻿namespace InventoryApi.DTOs;
 
+/// <summary>
+/// Data transfer object representing a product.
+/// </summary>
 public class ProductDto
 {
     public int Id { get; set; }

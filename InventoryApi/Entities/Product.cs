@@ -1,5 +1,8 @@
 ﻿namespace InventoryApi.Entities;
 
+/// <summary>
+/// Entity representing a product in the inventory system.
+/// </summary>
 public class Product
 {
     public int Id { get; set; }

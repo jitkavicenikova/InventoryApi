@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryApi.Services;
 
+/// <summary>
+/// Service for managing products, implements <see cref="IProductService"/>.
+/// </summary>
 public class ProductService(InventoryDbContext context, IMapper mapper, IStockService stockService) : IProductService
 {
     public async Task<ProductDto> GetByIdAsync(int id)

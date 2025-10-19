@@ -4,6 +4,9 @@ using InventoryApi.Enums;
 
 namespace InventoryApi.Services;
 
+/// <summary>
+/// Service for managing stock movements, implements <see cref="IStockMovementService"/>.
+/// </summary>
 public class StockMovementService(InventoryDbContext context) : IStockMovementService
 {
     public async Task CreateAsync(Stock stock, int quantityChange, MovementType type)

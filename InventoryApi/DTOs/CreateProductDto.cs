@@ -2,6 +2,10 @@
 
 namespace InventoryApi.DTOs;
 
+/// <summary>
+/// Data transfer object used to create a new product.
+/// Contains all required fields for product creation.
+/// </summary>
 public class CreateProductDto
 {
     [Required]

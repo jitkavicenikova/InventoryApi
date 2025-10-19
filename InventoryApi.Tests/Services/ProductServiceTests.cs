@@ -1,8 +1,11 @@
-﻿using InventoryApi.Data;
+﻿using AutoMapper;
+using InventoryApi.Data;
 using InventoryApi.DTOs;
 using InventoryApi.Entities;
+using InventoryApi.Mapping;
 using InventoryApi.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace InventoryApi.Tests.Services;
@@ -21,7 +24,14 @@ public class ProductServiceTests
 
         _dbContext = new InventoryDbContext(options);
         _stockServiceMock = new Mock<IStockService>();
-        _productService = new ProductService(_dbContext, _stockServiceMock.Object);
+
+        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => { });
+        var expression = new MapperConfigurationExpression();
+        expression.AddProfile<MappingProfile>();
+        var config = new MapperConfiguration(expression, loggerFactory);
+        var mapper = new Mapper(config);
+
+        _productService = new ProductService(_dbContext, mapper, _stockServiceMock.Object);
     }
 
     [Fact]

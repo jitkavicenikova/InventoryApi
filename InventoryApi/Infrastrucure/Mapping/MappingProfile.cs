@@ -2,7 +2,7 @@
 using InventoryApi.DTOs;
 using InventoryApi.Entities;
 
-namespace InventoryApi.Mapping;
+namespace InventoryApi.Infrastrucure.Mapping;
 
 public class MappingProfile : Profile
 {

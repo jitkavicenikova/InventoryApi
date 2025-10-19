@@ -2,7 +2,7 @@
 using InventoryApi.Data;
 using InventoryApi.DTOs;
 using InventoryApi.Entities;
-using InventoryApi.Mapping;
+using InventoryApi.Infrastrucure.Mapping;
 using InventoryApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace InventoryApi.Filters;
+namespace InventoryApi.Infrastrucure.Filters;
 
 public class GlobalExceptionFilter : IExceptionFilter
 {

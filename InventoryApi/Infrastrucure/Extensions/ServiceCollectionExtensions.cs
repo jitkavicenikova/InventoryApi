@@ -1,6 +1,6 @@
 ﻿using InventoryApi.Services;
 
-namespace InventoryApi.Extensions;
+namespace InventoryApi.Infrastrucure.Extensions;
 
 public static class ServiceCollectionExtensions
 {

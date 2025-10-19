@@ -1,7 +1,7 @@
 using InventoryApi.Data;
-using InventoryApi.Extensions;
-using InventoryApi.Filters;
-using InventoryApi.Mapping;
+using InventoryApi.Infrastrucure.Extensions;
+using InventoryApi.Infrastrucure.Filters;
+using InventoryApi.Infrastrucure.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

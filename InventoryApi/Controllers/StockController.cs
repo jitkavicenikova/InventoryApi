@@ -58,6 +58,10 @@ public class StockController : ControllerBase
         {
             return BadRequest(e.Message);
         }
+        catch (ArgumentOutOfRangeException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpGet]

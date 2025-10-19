@@ -89,6 +89,25 @@ public class StockServiceTests
     }
 
     [Fact]
+    public async Task CreateAsync_ShouldThrow_WhenStockAlreadyExists()
+    {
+        var product = new Product { Id = 1, Name = "TestProduct", Sku = "SKU1", Price = 10, Currency = "USD", IsDeleted = false };
+        var existingStock = new Stock { Id = 1, ProductId = 1, Product = product, Quantity = 5, Unit = Unit.Piece, IsDeleted = false };
+
+        await _context.Products.AddAsync(product);
+        await _context.Stocks.AddAsync(existingStock);
+        await _context.SaveChangesAsync();
+
+        var createDto = new CreateStockDto { ProductId = 1, Quantity = 10, Unit = Unit.Piece };
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => _service.CreateAsync(createDto)
+        );
+
+        Assert.Equal("Stock for Product ID 1 already exists.", exception.Message);
+    }
+
+    [Fact]
     public async Task UpdateQuantityAsync_ShouldIncreaseQuantity_ForIncomingMovement()
     {
         var stock = new Stock { Id = 1, Quantity = 5, Unit = Unit.Piece, IsDeleted = false, Product = product };

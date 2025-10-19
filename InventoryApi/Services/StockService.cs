@@ -28,6 +28,14 @@ public class StockService(InventoryDbContext context, IMapper mapper, IStockMove
         var product = await context.Products
             .FirstOrDefaultAsync(p => p.Id == createStockDto.ProductId)
             ?? throw new KeyNotFoundException($"Product with id {createStockDto.ProductId} not found");
+
+        var exists = await context.Stocks
+            .AnyAsync(s => s.ProductId == createStockDto.ProductId);
+        if (exists)
+        {
+            throw new InvalidOperationException($"Stock for Product ID {createStockDto.ProductId} already exists.");
+        }
+        
         var stock = new Stock
         {
             Quantity = createStockDto.Quantity,

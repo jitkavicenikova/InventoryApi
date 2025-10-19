@@ -3,6 +3,7 @@ using InventoryApi.DTOs;
 using InventoryApi.Enums;
 using InventoryApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace InventoryApi.Tests.Controllers;
@@ -19,7 +20,8 @@ public class StockControllerTests
     public StockControllerTests()
     {
         _mockService = new Mock<IStockService>();
-        _controller = new StockController(_mockService.Object);
+        var mockLogger = new Mock<ILogger<StockController>>();
+        _controller = new StockController(_mockService.Object, mockLogger.Object);
     }
 
     [Fact]

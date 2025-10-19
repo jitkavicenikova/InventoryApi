@@ -9,7 +9,7 @@ namespace InventoryApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class StockController(IStockService service) : ControllerBase
+public class StockController(IStockService service, ILogger<StockController> logger) : ControllerBase
 {
     /// <summary>
     /// Retrieves detailed information about a stock item by its ID.
@@ -19,6 +19,7 @@ public class StockController(IStockService service) : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<StockDetailDto>> GetDetailById(int id)
     {
+        logger.LogInformation("Retrieving stock detail with ID {StockId}", id);
         var stock = await service.GetDetailByIdAsync(id);
         return Ok(stock);
     }
@@ -31,6 +32,7 @@ public class StockController(IStockService service) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<StockDto>> Create([FromBody] CreateStockDto createStockDto)
     {
+        logger.LogInformation("Creating a new stock item for Product ID {ProductId}", createStockDto.ProductId);
         var stock = await service.CreateAsync(createStockDto);
         return CreatedAtAction(nameof(GetDetailById), new { id = stock.Id }, stock);
     }
@@ -44,6 +46,7 @@ public class StockController(IStockService service) : ControllerBase
     [HttpPatch]
     public async Task<ActionResult<StockDto>> UpdateQuantity(int id, [FromBody] UpdateStockQuantityDto updateStockDto)
     {
+        logger.LogInformation("Updating stock quantity with ID {StockId}", id);
         var stock = await service.UpdateQuantityAsync(id, updateStockDto);
         return Ok(stock);
     }
@@ -55,6 +58,7 @@ public class StockController(IStockService service) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<StockDto>>> GetAll()
     {
+        logger.LogInformation("Retrieving all stock items");
         var stocks = await service.GetAllAsync();
         return Ok(stocks);
     }

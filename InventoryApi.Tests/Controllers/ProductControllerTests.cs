@@ -2,6 +2,7 @@
 using InventoryApi.DTOs;
 using InventoryApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace InventoryApi.Tests.Controllers;
@@ -18,7 +19,8 @@ public class ProductControllerTests
     public ProductControllerTests()
     {
         _mockService = new Mock<IProductService>();
-        _controller = new ProductController(_mockService.Object);
+         var mockLogger = new Mock<ILogger<ProductController>>();
+        _controller = new ProductController(_mockService.Object, mockLogger.Object);
     }
 
     [Fact]

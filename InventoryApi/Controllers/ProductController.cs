@@ -10,7 +10,7 @@ namespace InventoryApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ProductController(IProductService service) : ControllerBase
+public class ProductController(IProductService service, ILogger<ProductController> logger) : ControllerBase
 {
     /// <summary>
     /// Retrieves a product by its ID.
@@ -20,6 +20,7 @@ public class ProductController(IProductService service) : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductDto>> GetById(int id)
     {
+        logger.LogInformation("Retrieving product with ID {ProductId}", id);
         var product = await service.GetByIdAsync(id);
         return Ok(product);
     }
@@ -32,6 +33,7 @@ public class ProductController(IProductService service) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ProductDto>> Create([FromBody] CreateProductDto createProductDto)
     {
+        logger.LogInformation("Creating a new product with SKU {ProductSku}", createProductDto.Sku);
         var product = await service.CreateAsync(createProductDto);
         return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
     }
@@ -45,6 +47,7 @@ public class ProductController(IProductService service) : ControllerBase
     [HttpPatch("{id:int}")]
     public async Task<ActionResult<ProductDto>> Update(int id, [FromBody] UpdateProductDto updateProductDto)
     {
+        logger.LogInformation("Updating product with ID {ProductId}", id);
         var product = await service.UpdateAsync(id, updateProductDto);
         return Ok(product);
     }
@@ -57,6 +60,7 @@ public class ProductController(IProductService service) : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
+        logger.LogInformation("Deleting product with ID {ProductId}", id);
         await service.DeleteAsync(id);
         return NoContent();
     }
@@ -68,6 +72,7 @@ public class ProductController(IProductService service) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
     {
+        logger.LogInformation("Retrieving all products");
         var products = await service.GetAllAsync();
         return Ok(products);
     }

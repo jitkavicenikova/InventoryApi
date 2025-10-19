@@ -7,7 +7,7 @@ namespace InventoryApi.Infrastrucure.Filters;
 /// A global exception filter that handles unhandled exceptions thrown by controllers
 /// and converts them into appropriate HTTP responses.
 /// </summary>
-public class GlobalExceptionFilter : IExceptionFilter
+public class GlobalExceptionFilter(ILogger<GlobalExceptionFilter> logger) : IExceptionFilter
 {
     /// <summary>
     /// Called when an exception occurs during the execution of a controller action.
@@ -17,6 +17,14 @@ public class GlobalExceptionFilter : IExceptionFilter
 
     public void OnException(ExceptionContext context)
     {
+        var request = context.HttpContext.Request;
+        logger.LogError(
+            "Exception caught in GlobalExceptionFilter. {Method} {Path} threw {ExceptionType} with message: {Message}",
+            request.Method,
+            request.Path,
+            context.Exception.GetType().Name,
+            context.Exception.Message);
+
         int statusCode = context.Exception switch
         {
             KeyNotFoundException => StatusCodes.Status404NotFound,

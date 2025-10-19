@@ -1,5 +1,6 @@
 ﻿using InventoryApi.Controllers;
 using InventoryApi.DTOs;
+using InventoryApi.Enums;
 using InventoryApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -53,14 +54,14 @@ public class StockControllerTests
         var result = await _controller.GetAll();
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var list = Assert.IsType<List<StockDto>>(okResult.Value);
-        Assert.Empty(list);
+        var enumerable = Assert.IsAssignableFrom<IEnumerable<StockDto>>(okResult.Value);
+        Assert.Empty(enumerable);
     }
 
     [Fact]
     public async Task Create_ShouldReturnCreatedAtAction_WhenStockCreated()
     {
-        var createDto = new CreateStockDto { ProductId = 1, Quantity = 10 };
+        var createDto = new CreateStockDto { ProductId = 1, Quantity = 10, Unit = Unit.Piece };
         var stock = new StockDto { Id = 1, ProductId = 1, Quantity = 10 };
 
         _mockService.Setup(s => s.CreateAsync(createDto)).ReturnsAsync(stock);

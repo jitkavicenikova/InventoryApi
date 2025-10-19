@@ -11,8 +11,8 @@ public class UpdateStockQuantityDto
 {
     [Required]
     [Range(0, double.MaxValue, ErrorMessage = "QuantityChange must be 0 or greater.")]
-    public int QuantityChange { get; set; }
+    public required int QuantityChange { get; set; }
 
     [Required]
-    public MovementType MovementType { get; set; }
+    public required MovementType MovementType { get; set; }
 }

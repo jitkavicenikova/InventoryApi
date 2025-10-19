@@ -60,7 +60,7 @@ public class ProductControllerTests
     [Fact]
     public async Task Create_ShouldReturnCreatedAtAction_WhenProductCreated()
     {
-        var createDto = new CreateProductDto { Name = "New", Currency = "CZK", Sku = "SKU" };
+        var createDto = new CreateProductDto { Name = "New", Currency = "CZK", Sku = "SKU", Price = 5 };
         var product = new ProductDto { Id = 1, Name = "New", Currency = "CZK", Sku = "SKU", Price = 5 };
 
         _mockService.Setup(s => s.CreateAsync(createDto)).ReturnsAsync(product);

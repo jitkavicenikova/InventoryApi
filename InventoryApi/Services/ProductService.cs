@@ -26,11 +26,7 @@ public class ProductService : IProductService
 
     public async Task<ProductDto> CreateAsync(CreateProductDto createProductDto)
     {
-        var product = await _context.Products.FirstOrDefaultAsync(p => p.Sku == createProductDto.Sku && !p.IsDeleted);
-        if (product != null)
-        {
-            throw new InvalidOperationException("SKU must be unique");
-        }
+        CheckSkuUniqueness(createProductDto.Sku);
 
         var entity = ProductMapper.ToEntity(createProductDto);
         _context.Products.Add(entity);
@@ -42,6 +38,11 @@ public class ProductService : IProductService
     public async Task<ProductDto> UpdateAsync(int id, UpdateProductDto updateProductDto)
     {
         var product = await GetEntityByIdOrThrow(id);
+
+        if (product.Sku != updateProductDto.Sku)
+        {
+            CheckSkuUniqueness(updateProductDto.Sku, id);
+        }
 
         product.Name = updateProductDto.Name;
         product.Price = updateProductDto.Price;
@@ -77,5 +78,14 @@ public class ProductService : IProductService
         return await _context.Products
             .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)
             ?? throw new KeyNotFoundException($"Product with id {id} not found");
+    }
+
+    private void CheckSkuUniqueness(string sku, int? excludeId = null)
+    {
+        if (_context.Products.Any(p => p.Sku == sku && !p.IsDeleted
+            && (!excludeId.HasValue || p.Id != excludeId.Value)))
+        {
+            throw new InvalidOperationException("SKU must be unique");
+        }
     }
 }

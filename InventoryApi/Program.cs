@@ -1,13 +1,16 @@
 using InventoryApi.Data;
 using InventoryApi.Extensions;
+using InventoryApi.Filters;
 using InventoryApi.Mapping;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<GlobalExceptionFilter>();
+});
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

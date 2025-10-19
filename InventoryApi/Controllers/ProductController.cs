@@ -11,61 +11,29 @@ public class ProductController(IProductService service) : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductDto>> GetById(int id)
     {
-        try
-        {
-            var product = await service.GetByIdAsync(id);
-            return Ok(product);
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
+        var product = await service.GetByIdAsync(id);
+        return Ok(product);
     }
 
     [HttpPost]
     public async Task<ActionResult<ProductDto>> Create([FromBody] CreateProductDto createProductDto)
     {
-        try
-        {
-            var product = await service.CreateAsync(createProductDto);
-            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(e.Message);
-        }
+        var product = await service.CreateAsync(createProductDto);
+        return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
     }
 
     [HttpPatch("{id:int}")]
     public async Task<ActionResult<ProductDto>> Update(int id, [FromBody] UpdateProductDto updateProductDto)
     {
-        try
-        {
-            var product = await service.UpdateAsync(id, updateProductDto);
-            return Ok(product);
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(e.Message);
-        }
+        var product = await service.UpdateAsync(id, updateProductDto);
+        return Ok(product);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        try
-        {
-            await service.DeleteAsync(id);
-            return NoContent();
-        }
-        catch (KeyNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
+        await service.DeleteAsync(id);
+        return NoContent();
     }
 
     [HttpGet]

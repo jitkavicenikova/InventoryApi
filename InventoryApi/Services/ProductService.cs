@@ -73,7 +73,7 @@ public class ProductService : IProductService
         return products.Select(ProductMapper.ToDto);
     }
 
-    public async Task<Product> GetEntityByIdOrThrow(int id)
+    private async Task<Product> GetEntityByIdOrThrow(int id)
     {
         return await _context.Products
             .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted)
